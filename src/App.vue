@@ -1,32 +1,72 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+  <div id="app" @click="closeMenu">
+    <p class="clockmouseover" @mouseover="show = !show">Current Time :</p>
+    <p class="clock" v-if="show">
+      {{ datetime }}
+    </p>
+    <Menu @buttonPressed="buttonPressed" />
+    <router-view></router-view>
   </div>
 </template>
 
+<script>
+import Menu from "./components/menu/template.vue";
+export default {
+  name: "app",
+  components: { Menu },
+  data() {
+    return {
+      menubuttonPressed: false,
+      datetime: "",
+      show: true,
+    };
+  },
+  created: function () {
+    let that = this;
+    this.timer = setInterval(() => {
+      that.datetime = new Date().toLocaleString();
+    }, 1000);
+  },
+  methods: {
+    closeMenu: function () {
+      if (this.menubuttonPressed == true) {
+        this.menubuttonPressed = false;
+        return;
+      }
+      document
+        .getElementById("invisible-closeMenu")
+        .dispatchEvent(new Event("click"));
+    },
+    buttonPressed: function (value) {
+      this.menubuttonPressed = value;
+    },
+  },
+};
+</script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@import url("https://fonts.googleapis.com/css?family=Oswald:700");
+</style>
+<style>
+body {
+  background-color: rgb(214, 250, 238);
+  font-family: "Oswald";
 }
-
-#nav {
-  padding: 30px;
+.clock {
+  position: fixed; /* 要素の位置を固定する */
+  left: 0; /* 基準の位置を画面の一番右に指定する */
+  top: 40px;
+  margin: 0 0 0 0;
+  border: 3px solid #326693; /* ボーダーを指定する */
+  background-color: #00d49481;
+  color: white;
 }
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.clockmouseover {
+  position: fixed; /* 要素の位置を固定する */
+  left: 0; /* 基準の位置を画面の一番右に指定する */
+  top: 0;
+  margin: 0 0 0 0;
+  border: 3px solid #326693; /* ボーダーを指定する */
+  background-color: #00d49481;
+  color: white;
 }
 </style>
